@@ -1502,7 +1502,7 @@ public class RMWebServices {
     }
     Resource r =
         Resource.newInstance(newApp.getResource().getMemorySize(), newApp
-          .getResource().getvCores());
+            .getResource().getvCores(), newApp.getResource().getFpgaSlots());
     return r;
   }
 
@@ -1974,7 +1974,7 @@ public class RMWebServices {
         .getReservationRequest()) {
       ResourceInfo rInfo = resReqInfo.getCapability();
       Resource capability =
-          Resource.newInstance(rInfo.getMemorySize(), rInfo.getvCores());
+          Resource.newInstance(rInfo.getMemorySize(), rInfo.getvCores(), rInfo.getFpgaSlots());
       int numContainers = resReqInfo.getNumContainers();
       int minConcurrency = resReqInfo.getMinConcurrency();
       long duration = resReqInfo.getDuration();
@@ -2087,7 +2087,7 @@ public class RMWebServices {
         .getReservationRequest()) {
       ResourceInfo rInfo = resReqInfo.getCapability();
       Resource capability =
-          Resource.newInstance(rInfo.getMemorySize(), rInfo.getvCores());
+          Resource.newInstance(rInfo.getMemorySize(), rInfo.getvCores(), rInfo.getFpgaSlots());
       int numContainers = resReqInfo.getNumContainers();
       int minConcurrency = resReqInfo.getMinConcurrency();
       long duration = resReqInfo.getDuration();

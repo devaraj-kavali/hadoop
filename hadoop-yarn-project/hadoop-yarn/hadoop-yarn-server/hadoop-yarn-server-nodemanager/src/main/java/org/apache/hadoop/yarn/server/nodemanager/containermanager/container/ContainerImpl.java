@@ -170,7 +170,7 @@ public class ContainerImpl implements Container {
         && !this.resource.equals(recoveredCapability)) {
       // resource capability had been updated before NM was down
       this.resource = Resource.newInstance(recoveredCapability.getMemorySize(),
-          recoveredCapability.getVirtualCores());
+          recoveredCapability.getVirtualCores(), recoveredCapability.getFpgaSlots());
     }
     this.version = rcs.getVersion();
   }

@@ -72,6 +72,9 @@ public class MetricsOverviewTable extends HtmlBlock {
         th().$class("ui-state-default")._("VCores Used")._().
         th().$class("ui-state-default")._("VCores Total")._().
         th().$class("ui-state-default")._("VCores Reserved")._().
+        th().$class("ui-state-default")._("FPGAs Used")._().
+        th().$class("ui-state-default")._("FPGAs Total")._().
+        th().$class("ui-state-default")._("FPGAs Reserved")._().
       _().
     _().
     tbody().$class("ui-widget-content").
@@ -92,6 +95,9 @@ public class MetricsOverviewTable extends HtmlBlock {
         td(String.valueOf(clusterMetrics.getAllocatedVirtualCores())).
         td(String.valueOf(clusterMetrics.getTotalVirtualCores())).
         td(String.valueOf(clusterMetrics.getReservedVirtualCores())).
+        td(String.valueOf(clusterMetrics.getAllocatedFpgaSlots())).
+        td(String.valueOf(clusterMetrics.getTotalFpgaSlots())).
+        td(String.valueOf(clusterMetrics.getReservedFpgaSlots())).
       _().
     _()._();
 

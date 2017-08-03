@@ -181,6 +181,9 @@ public class YarnConfiguration extends Configuration {
   public static final String RM_SCHEDULER_MINIMUM_ALLOCATION_VCORES =
       YARN_PREFIX + "scheduler.minimum-allocation-vcores";
     public static final int DEFAULT_RM_SCHEDULER_MINIMUM_ALLOCATION_VCORES = 1;
+  public static final String RM_SCHEDULER_MINIMUM_ALLOCATION_FPGA_SLOTS =
+      YARN_PREFIX + "scheduler.minimum-allocation-fpga-slots";
+  public static final int DEFAULT_RM_SCHEDULER_MINIMUM_ALLOCATION_FPGA_SLOTS = 1;
 
   /** Maximum request grant-able by the RM scheduler. */
   public static final String RM_SCHEDULER_MAXIMUM_ALLOCATION_MB =
@@ -189,6 +192,9 @@ public class YarnConfiguration extends Configuration {
   public static final String RM_SCHEDULER_MAXIMUM_ALLOCATION_VCORES =
       YARN_PREFIX + "scheduler.maximum-allocation-vcores";
   public static final int DEFAULT_RM_SCHEDULER_MAXIMUM_ALLOCATION_VCORES = 4;
+  public static final String RM_SCHEDULER_MAXIMUM_ALLOCATION_FPGA_SLOTS =
+      YARN_PREFIX + "scheduler.maximum-allocation-fpga-slots";
+  public static final int DEFAULT_RM_SCHEDULER_MAXIMUM_ALLOCATION_FPGA_SLOTS = 4;
 
   /** Number of threads to handle scheduler interface.*/
   public static final String RM_SCHEDULER_CLIENT_THREAD_COUNT =
@@ -919,6 +925,9 @@ public class YarnConfiguration extends Configuration {
   /** Number of Virtual CPU Cores which can be allocated for containers.*/
   public static final String NM_VCORES = NM_PREFIX + "resource.cpu-vcores";
   public static final int DEFAULT_NM_VCORES = 8;
+  
+  public static final String NM_FPGA_SLOTS = NM_PREFIX + "resource.fpga-slots";
+  public static final int DEFAULT_NM_FPGA_SLOTS = 8;
 
   /** Count logical processors(like hyperthreads) as cores. */
   public static final String NM_COUNT_LOGICAL_PROCESSORS_AS_CORES = NM_PREFIX

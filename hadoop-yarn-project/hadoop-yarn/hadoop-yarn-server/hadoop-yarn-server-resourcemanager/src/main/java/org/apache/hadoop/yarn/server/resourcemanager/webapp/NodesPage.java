@@ -78,6 +78,8 @@ class NodesPage extends RmView {
               .th(".mem", "Mem Avail")
               .th(".vcores", "VCores Used")
               .th(".vcores", "VCores Avail")
+            .th(".fpgas", "FPGAs Used")
+            .th(".fpgas", "FPGAs Avail")
               .th(".nodeManagerVersion", "Version")._()._().tbody();
       NodeState stateFilter = null;
       if (type != null && !type.isEmpty()) {
@@ -148,6 +150,8 @@ class NodesPage extends RmView {
             ._(StringUtils.byteDesc(availableMemory * BYTES_IN_MB))._()
             .td(String.valueOf(info.getUsedVirtualCores()))
             .td(String.valueOf(info.getAvailableVirtualCores()))
+            .td(String.valueOf(info.getUsedFpgaSlots()))
+            .td(String.valueOf(info.getAvailableFpgaSlots()))
             .td(ni.getNodeManagerVersion())._();
       }
       tbody._()._();

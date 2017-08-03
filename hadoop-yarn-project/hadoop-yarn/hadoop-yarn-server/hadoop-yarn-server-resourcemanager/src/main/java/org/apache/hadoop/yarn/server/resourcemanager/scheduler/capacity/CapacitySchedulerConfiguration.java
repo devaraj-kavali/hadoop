@@ -126,6 +126,13 @@ public class CapacitySchedulerConfiguration extends ReservationSchedulerConfigur
   public static final String MAXIMUM_ALLOCATION_VCORES =
       "maximum-allocation-vcores";
   
+  @Private
+  public static final String MAXIMUM_ALLOCATION_FPGA_SLOTS =
+      "maximum-allocation-fpga-slots";
+
+  /**
+   * Ordering policy of queues
+   */
   public static final String ORDERING_POLICY = "ordering-policy";
   
   public static final String FIFO_ORDERING_POLICY = "fifo";
@@ -661,7 +668,10 @@ public class CapacitySchedulerConfiguration extends ReservationSchedulerConfigur
     int minimumCores = getInt(
         YarnConfiguration.RM_SCHEDULER_MINIMUM_ALLOCATION_VCORES,
         YarnConfiguration.DEFAULT_RM_SCHEDULER_MINIMUM_ALLOCATION_VCORES);
-    return Resources.createResource(minimumMemory, minimumCores);
+    int minimumFpgaSlots = getInt(
+        YarnConfiguration.RM_SCHEDULER_MINIMUM_ALLOCATION_FPGA_SLOTS,
+        YarnConfiguration.DEFAULT_RM_SCHEDULER_MINIMUM_ALLOCATION_FPGA_SLOTS);
+    return Resources.createResource(minimumMemory, minimumCores, minimumFpgaSlots);
   }
 
   public Resource getMaximumAllocation() {
@@ -671,7 +681,10 @@ public class CapacitySchedulerConfiguration extends ReservationSchedulerConfigur
     int maximumCores = getInt(
         YarnConfiguration.RM_SCHEDULER_MAXIMUM_ALLOCATION_VCORES,
         YarnConfiguration.DEFAULT_RM_SCHEDULER_MAXIMUM_ALLOCATION_VCORES);
-    return Resources.createResource(maximumMemory, maximumCores);
+    int maximumFpgaSlots = getInt(
+        YarnConfiguration.RM_SCHEDULER_MAXIMUM_ALLOCATION_FPGA_SLOTS,
+        YarnConfiguration.DEFAULT_RM_SCHEDULER_MAXIMUM_ALLOCATION_FPGA_SLOTS);
+    return Resources.createResource(maximumMemory, maximumCores, maximumFpgaSlots);
   }
 
   /**
@@ -688,6 +701,8 @@ public class CapacitySchedulerConfiguration extends ReservationSchedulerConfigur
         (int)UNDEFINED);
     int maxAllocationVcoresPerQueue = getInt(
         queuePrefix + MAXIMUM_ALLOCATION_VCORES, (int)UNDEFINED);
+    int maxAllocationFpgaSlotsPerQueue = getInt(
+        queuePrefix + MAXIMUM_ALLOCATION_FPGA_SLOTS, (int)UNDEFINED);
     if (LOG.isDebugEnabled()) {
       LOG.debug("max alloc mb per queue for " + queue + " is "
           + maxAllocationMbPerQueue);
@@ -704,7 +719,7 @@ public class CapacitySchedulerConfiguration extends ReservationSchedulerConfigur
       maxAllocationVcoresPerQueue = clusterMax.getVirtualCores();
     }
     Resource result = Resources.createResource(maxAllocationMbPerQueue,
-        maxAllocationVcoresPerQueue);
+        maxAllocationVcoresPerQueue, maxAllocationFpgaSlotsPerQueue);
     if (maxAllocationMbPerQueue > clusterMax.getMemorySize()
         || maxAllocationVcoresPerQueue > clusterMax.getVirtualCores()) {
       throw new IllegalArgumentException(

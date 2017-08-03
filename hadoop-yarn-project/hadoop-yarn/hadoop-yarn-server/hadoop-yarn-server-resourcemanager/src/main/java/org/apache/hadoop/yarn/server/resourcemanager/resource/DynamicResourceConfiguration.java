@@ -56,6 +56,9 @@ public class DynamicResourceConfiguration extends Configuration {
   public static final String MEMORY = "memory";
 
   @Private
+  public static final String FPGA_SLOTS = "fpga-slots";
+
+  @Private
   public static final String OVERCOMMIT_TIMEOUT = "overcommittimeout";
 
   public DynamicResourceConfiguration() {
@@ -89,6 +92,19 @@ public class DynamicResourceConfiguration extends Configuration {
     setInt(getNodePrefix(node) + VCORES, vcores);
     LOG.debug("DRConf - setVcoresPerNode: nodePrefix=" + getNodePrefix(node) +
       ", vcores=" + vcores);
+  }
+  
+  public int getFpgaSlotsPerNode(String node) {
+    int fpgaSlotsPerNode =
+      getInt(getNodePrefix(node) + FPGA_SLOTS,
+        YarnConfiguration.DEFAULT_NM_FPGA_SLOTS);
+    return fpgaSlotsPerNode;
+  }
+
+  public void setFpgaSlotsPerNode(String node, int fpgaSlots) {
+    setInt(getNodePrefix(node) + FPGA_SLOTS, fpgaSlots);
+    LOG.debug("DRConf - setFpgaSlotsPerNode: nodePrefix=" + getNodePrefix(node) +
+      ", fpgaSlots=" + fpgaSlots);
   }
 
   public int getMemoryPerNode(String node) {
@@ -136,8 +152,9 @@ public class DynamicResourceConfiguration extends Configuration {
       NodeId nid = NodeId.fromString(node);
       int vcores = getVcoresPerNode(node);
       int memory = getMemoryPerNode(node);
+      int fpgaSlots = getFpgaSlotsPerNode(node);
       int overCommitTimeout = getOverCommitTimeoutPerNode(node);
-      Resource resource = Resources.createResource(memory, vcores);
+      Resource resource = Resources.createResource(memory, vcores, fpgaSlots);
       ResourceOption resourceOption =
           ResourceOption.newInstance(resource, overCommitTimeout);
       resourceOptions.put(nid, resourceOption);

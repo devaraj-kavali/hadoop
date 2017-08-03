@@ -652,7 +652,7 @@ public class ResourceTrackerService extends AbstractService implements
       String[] nodes = this.drConf.getNodes();
       if (nodes != null && Arrays.asList(nodes).contains(nodeId)) {
         return Resource.newInstance(this.drConf.getMemoryPerNode(nodeId),
-            this.drConf.getVcoresPerNode(nodeId));
+            this.drConf.getVcoresPerNode(nodeId), this.drConf.getFpgaSlotsPerNode(nodeId));
       } else {
         return null;
       }

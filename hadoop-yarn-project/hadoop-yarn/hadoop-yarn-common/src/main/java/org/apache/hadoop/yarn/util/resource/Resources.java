@@ -70,6 +70,16 @@ public class Resources {
       }
       return Long.signum(diff);
     }
+
+    @Override
+    public int getFpgaSlots() {
+      return 0;
+    }
+
+    @Override
+    public void setFpgaSlots(int fpgaSlots) {
+      throw new RuntimeException("NONE cannot be modified!");
+    }
     
   };
   
@@ -115,6 +125,16 @@ public class Resources {
       }
       return Long.signum(diff);
     }
+
+    @Override
+    public int getFpgaSlots() {
+      return 0;
+    }
+
+    @Override
+    public void setFpgaSlots(int fpgaSlots) {
+      throw new RuntimeException("UNBOUNDED cannot be modified!");
+    }
     
   };
 
@@ -126,6 +146,13 @@ public class Resources {
     Resource resource = Records.newRecord(Resource.class);
     resource.setMemorySize(memory);
     resource.setVirtualCores(cores);
+    return resource;
+  }
+  public static Resource createResource(int memory, int cores, int fpgaSlots) {
+    Resource resource = Records.newRecord(Resource.class);
+    resource.setMemorySize(memory);
+    resource.setVirtualCores(cores);
+    resource.setFpgaSlots(fpgaSlots);
     return resource;
   }
 
@@ -140,6 +167,14 @@ public class Resources {
     return resource;
   }
 
+  public static Resource createResource(long memory, int cores, int fpgaSlots) {
+    Resource resource = Records.newRecord(Resource.class);
+    resource.setMemorySize(memory);
+    resource.setVirtualCores(cores);
+    resource.setFpgaSlots(fpgaSlots);
+    return resource;
+  }
+
   public static Resource none() {
     return NONE;
   }
@@ -149,12 +184,13 @@ public class Resources {
   }
 
   public static Resource clone(Resource res) {
-    return createResource(res.getMemorySize(), res.getVirtualCores());
+    return createResource(res.getMemorySize(), res.getVirtualCores(), res.getFpgaSlots());
   }
 
   public static Resource addTo(Resource lhs, Resource rhs) {
     lhs.setMemorySize(lhs.getMemorySize() + rhs.getMemorySize());
     lhs.setVirtualCores(lhs.getVirtualCores() + rhs.getVirtualCores());
+    lhs.setFpgaSlots(lhs.getFpgaSlots() + rhs.getFpgaSlots());
     return lhs;
   }
 
@@ -165,6 +201,7 @@ public class Resources {
   public static Resource subtractFrom(Resource lhs, Resource rhs) {
     lhs.setMemorySize(lhs.getMemorySize() - rhs.getMemorySize());
     lhs.setVirtualCores(lhs.getVirtualCores() - rhs.getVirtualCores());
+    lhs.setFpgaSlots(lhs.getFpgaSlots() - rhs.getFpgaSlots());
     return lhs;
   }
 
@@ -179,6 +216,7 @@ public class Resources {
   public static Resource multiplyTo(Resource lhs, double by) {
     lhs.setMemorySize((long)(lhs.getMemorySize() * by));
     lhs.setVirtualCores((int)(lhs.getVirtualCores() * by));
+    lhs.setFpgaSlots((int)(lhs.getFpgaSlots() * by));
     return lhs;
   }
 
@@ -195,6 +233,8 @@ public class Resources {
     lhs.setMemorySize(lhs.getMemorySize() + (long)(rhs.getMemorySize() * by));
     lhs.setVirtualCores(lhs.getVirtualCores()
         + (int)(rhs.getVirtualCores() * by));
+    lhs.setFpgaSlots(lhs.getFpgaSlots()
+        + (int)(rhs.getFpgaSlots() * by));
     return lhs;
   }
 
@@ -212,6 +252,15 @@ public class Resources {
     Resource out = clone(lhs);
     out.setMemorySize((long)(lhs.getMemorySize() * by));
     out.setVirtualCores((int)(lhs.getVirtualCores() * by));
+    out.setFpgaSlots((int)(lhs.getFpgaSlots() * by));
+    return out;
+  }
+
+  public static Resource multiplyAndRoundUp(Resource lhs, double by) {
+    Resource out = clone(lhs);
+    out.setMemorySize((long)Math.ceil(lhs.getMemorySize() * by));
+    out.setVirtualCores((int)Math.ceil(lhs.getVirtualCores() * by));
+    out.setFpgaSlots((int)Math.ceil(lhs.getFpgaSlots() * by));
     return out;
   }
   
@@ -300,7 +349,8 @@ public class Resources {
   
   public static boolean fitsIn(Resource smaller, Resource bigger) {
     return smaller.getMemorySize() <= bigger.getMemorySize() &&
-        smaller.getVirtualCores() <= bigger.getVirtualCores();
+        smaller.getVirtualCores() <= bigger.getVirtualCores() &&
+        smaller.getFpgaSlots() <= bigger.getFpgaSlots();
   }
 
   public static boolean fitsIn(ResourceCalculator rc, Resource cluster,
@@ -310,11 +360,13 @@ public class Resources {
   
   public static Resource componentwiseMin(Resource lhs, Resource rhs) {
     return createResource(Math.min(lhs.getMemorySize(), rhs.getMemorySize()),
-        Math.min(lhs.getVirtualCores(), rhs.getVirtualCores()));
+        Math.min(lhs.getVirtualCores(), rhs.getVirtualCores()),
+        Math.min(lhs.getFpgaSlots(), rhs.getFpgaSlots()));
   }
   
   public static Resource componentwiseMax(Resource lhs, Resource rhs) {
     return createResource(Math.max(lhs.getMemorySize(), rhs.getMemorySize()),
-        Math.max(lhs.getVirtualCores(), rhs.getVirtualCores()));
+        Math.max(lhs.getVirtualCores(), rhs.getVirtualCores()),
+        Math.max(lhs.getFpgaSlots(), rhs.getFpgaSlots()));
   }
 }

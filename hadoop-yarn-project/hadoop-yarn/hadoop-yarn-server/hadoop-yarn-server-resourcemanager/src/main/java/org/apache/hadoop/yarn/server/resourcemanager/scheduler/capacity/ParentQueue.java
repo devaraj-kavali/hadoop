@@ -545,7 +545,7 @@ public class ParentQueue extends AbstractCSQueue {
       if (!super.canAssignToThisQueue(clusterResource, ps.getPartition(),
           resourceLimits, Resources
               .createResource(getMetrics().getReservedMB(),
-                  getMetrics().getReservedVirtualCores()), schedulingMode)) {
+                  getMetrics().getReservedVirtualCores(), getMetrics().getReservedFpgaSlots()), schedulingMode)) {
 
         ActivitiesLogger.QUEUE.recordQueueActivity(activitiesManager, node,
             getParentName(), getQueueName(), ActivityState.SKIPPED,

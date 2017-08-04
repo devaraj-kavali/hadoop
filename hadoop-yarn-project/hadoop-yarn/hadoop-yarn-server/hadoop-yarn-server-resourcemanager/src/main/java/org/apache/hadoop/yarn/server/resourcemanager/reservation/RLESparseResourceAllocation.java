@@ -568,7 +568,7 @@ public class RLESparseResourceAllocation {
    */
   public Resource getMinimumCapacityInInterval(ReservationInterval interval) {
     Resource minCapacity = Resource.newInstance(
-        Integer.MAX_VALUE, Integer.MAX_VALUE);
+        Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
     long start = interval.getStartTime();
     long end = interval.getEndTime();
     NavigableMap<Long, Resource> capacityRange =

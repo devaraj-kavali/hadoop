@@ -69,6 +69,26 @@ public abstract class Resource implements Comparable<Resource> {
     resource.setMemorySize(memory);
     resource.setVirtualCores(vCores);
     return resource;
+  }  
+  
+  @Public
+  @Stable
+  public static Resource newInstance(int memory, int vCores, int fpgaSlots) {
+    Resource resource = Records.newRecord(Resource.class);
+    resource.setMemorySize(memory);
+    resource.setVirtualCores(vCores);
+    resource.setFpgaSlots(fpgaSlots);
+    return resource;
+  }
+
+  @Public
+  @Stable
+  public static Resource newInstance(long memory, int vCores, int fpgaSlots) {
+    Resource resource = Records.newRecord(Resource.class);
+    resource.setMemorySize(memory);
+    resource.setVirtualCores(vCores);
+    resource.setFpgaSlots(fpgaSlots);
+    return resource;
   }
 
   /**
@@ -140,6 +160,14 @@ public abstract class Resource implements Comparable<Resource> {
   @Public
   @Evolving
   public abstract void setVirtualCores(int vCores);
+
+  @Public
+  @Evolving
+  public abstract int getFpgaSlots();
+
+  @Public
+  @Evolving
+  public abstract void setFpgaSlots(int fpgaSlots);
 
   @Override
   public int hashCode() {

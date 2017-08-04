@@ -181,10 +181,14 @@ public class NodeStatusUpdaterImpl extends AbstractService implements
     int virtualMemoryMb = (int)Math.ceil(memoryMb * vMemToPMem);
     
     int virtualCores = NodeManagerHardwareUtils.getVCores(conf);
+    
+    int fpgaSlots = NodeManagerHardwareUtils.getFpgaSlots(conf);
+    
     LOG.info("Nodemanager resources: memory set to " + memoryMb + "MB.");
     LOG.info("Nodemanager resources: vcores set to " + virtualCores + ".");
+    LOG.info("Nodemanager resources: fpgaSlots set to " + fpgaSlots + ".");
 
-    this.totalResource = Resource.newInstance(memoryMb, virtualCores);
+    this.totalResource = Resource.newInstance(memoryMb, virtualCores, fpgaSlots);
     metrics.addResource(totalResource);
 
     // Get actual node physical resources
@@ -197,7 +201,7 @@ public class NodeStatusUpdaterImpl extends AbstractService implements
       physicalCores = rcp.getNumProcessors();
     }
     this.physicalResource =
-        Resource.newInstance(physicalMemoryMb, physicalCores);
+        Resource.newInstance(physicalMemoryMb, physicalCores, fpgaSlots);
 
     this.tokenKeepAliveEnabled = isTokenKeepAliveEnabled(conf);
     this.tokenRemovalDelayMs =

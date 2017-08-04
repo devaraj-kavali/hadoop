@@ -46,12 +46,17 @@ public class ClusterMetricsInfo {
   protected long availableVirtualCores;
   protected long allocatedVirtualCores;
 
+  protected long reservedFpgaSlots;
+  protected long availableFpgaSlots;
+  protected long allocatedFpgaSlots;
+
   protected int containersAllocated;
   protected int containersReserved;
   protected int containersPending;
 
   protected long totalMB;
   protected long totalVirtualCores;
+  protected long totalFpgaSlots;
   protected int totalNodes;
   protected int lostNodes;
   protected int unhealthyNodes;
@@ -84,6 +89,10 @@ public class ClusterMetricsInfo {
     this.availableVirtualCores = metrics.getAvailableVirtualCores();
     this.allocatedVirtualCores = metrics.getAllocatedVirtualCores();
 
+    this.reservedFpgaSlots = metrics.getReservedFpgaSlots();
+    this.availableFpgaSlots = metrics.getAvailableFpgaSlots();
+    this.allocatedFpgaSlots = metrics.getAllocatedFpgaSlots();
+
     this.containersAllocated = metrics.getAllocatedContainers();
     this.containersPending = metrics.getPendingContainers();
     this.containersReserved = metrics.getReservedContainers();
@@ -96,6 +105,7 @@ public class ClusterMetricsInfo {
       this.totalMB = availableMB + allocatedMB;
       this.totalVirtualCores = availableVirtualCores + allocatedVirtualCores;
     }
+    this.totalFpgaSlots = availableFpgaSlots + allocatedFpgaSlots;
     this.activeNodes = clusterMetrics.getNumActiveNMs();
     this.lostNodes = clusterMetrics.getNumLostNMs();
     this.unhealthyNodes = clusterMetrics.getUnhealthyNMs();
@@ -206,5 +216,20 @@ public class ClusterMetricsInfo {
   public int getShutdownNodes() {
     return this.shutdownNodes;
   }
+  
+  public long getReservedFpgaSlots() {
+    return reservedFpgaSlots;
+  }
 
+  public long getAvailableFpgaSlots() {
+    return availableFpgaSlots;
+  }
+
+  public long getAllocatedFpgaSlots() {
+    return allocatedFpgaSlots;
+  }
+
+  public long getTotalFpgaSlots() {
+    return allocatedFpgaSlots;
+  }
 }

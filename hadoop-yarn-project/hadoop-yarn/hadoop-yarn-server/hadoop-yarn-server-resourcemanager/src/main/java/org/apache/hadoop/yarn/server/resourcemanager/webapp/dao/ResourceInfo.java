@@ -29,6 +29,7 @@ import org.apache.hadoop.yarn.api.records.Resource;
 public class ResourceInfo {
   long memory;
   int vCores;
+  int fpgaSlots;
   
   public ResourceInfo() {
   }
@@ -36,6 +37,7 @@ public class ResourceInfo {
   public ResourceInfo(Resource res) {
     memory = res.getMemorySize();
     vCores = res.getVirtualCores();
+    fpgaSlots = res.getFpgaSlots();
   }
 
   public long getMemorySize() {
@@ -46,9 +48,13 @@ public class ResourceInfo {
     return vCores;
   }
   
+  public int getFpgaSlots() {
+    return fpgaSlots;
+  }
+  
   @Override
   public String toString() {
-    return "<memory:" + memory + ", vCores:" + vCores + ">";
+    return "<memory:" + memory + ", vCores:" + vCores + ", fpgaSlots:" + fpgaSlots + ">";
   }
 
   public void setMemory(int memory) {
@@ -58,8 +64,12 @@ public class ResourceInfo {
   public void setvCores(int vCores) {
     this.vCores = vCores;
   }
+  
+  public void setFpgaSlots(int fpgaSlots) {
+    this.fpgaSlots = fpgaSlots;
+  }
 
   public Resource getResource() {
-    return Resource.newInstance(memory, vCores);
+    return Resource.newInstance(memory, vCores, fpgaSlots);
   }
 }

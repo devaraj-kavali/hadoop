@@ -150,7 +150,8 @@ public class DominantResourceCalculator extends ResourceCalculator {
   public Resource divideAndCeil(Resource numerator, int denominator) {
     return Resources.createResource(
         divideAndCeil(numerator.getMemorySize(), denominator),
-        divideAndCeil(numerator.getVirtualCores(), denominator)
+        divideAndCeil(numerator.getVirtualCores(), denominator),
+        divideAndCeil(numerator.getFpgaSlots(), denominator)
         );
   }
 
@@ -186,15 +187,21 @@ public class DominantResourceCalculator extends ResourceCalculator {
         Math.max(r.getVirtualCores(), minimumResource.getVirtualCores()),
         stepFactor.getVirtualCores()),
       maximumResource.getVirtualCores());
-    return Resources.createResource(normalizedMemory,
-      normalizedCores);
+    int normalizedFpgaSlots = Math.min(
+        roundUp(
+          Math.max(r.getFpgaSlots(), minimumResource.getFpgaSlots()),
+          stepFactor.getFpgaSlots()),
+        maximumResource.getFpgaSlots());
+    return Resources.createResource(normalizedMemory, normalizedCores,
+        normalizedFpgaSlots);
   }
 
   @Override
   public Resource roundUp(Resource r, Resource stepFactor) {
     return Resources.createResource(
         roundUp(r.getMemorySize(), stepFactor.getMemorySize()),
-        roundUp(r.getVirtualCores(), stepFactor.getVirtualCores())
+        roundUp(r.getVirtualCores(), stepFactor.getVirtualCores()),
+        roundUp(r.getFpgaSlots(), stepFactor.getFpgaSlots())
         );
   }
 
@@ -202,7 +209,8 @@ public class DominantResourceCalculator extends ResourceCalculator {
   public Resource roundDown(Resource r, Resource stepFactor) {
     return Resources.createResource(
         roundDown(r.getMemorySize(), stepFactor.getMemorySize()),
-        roundDown(r.getVirtualCores(), stepFactor.getVirtualCores())
+        roundDown(r.getVirtualCores(), stepFactor.getVirtualCores()),
+        roundDown(r.getFpgaSlots(), stepFactor.getFpgaSlots())
         );
   }
 
@@ -214,7 +222,10 @@ public class DominantResourceCalculator extends ResourceCalculator {
             (int)Math.ceil(r.getMemorySize() * by), stepFactor.getMemorySize()),
         roundUp(
             (int)Math.ceil(r.getVirtualCores() * by),
-            stepFactor.getVirtualCores())
+            stepFactor.getVirtualCores()),
+        roundUp(
+            (int)Math.ceil(r.getFpgaSlots() * by),
+            stepFactor.getFpgaSlots())
         );
   }
 
@@ -229,6 +240,10 @@ public class DominantResourceCalculator extends ResourceCalculator {
         roundDown(
             (int)(r.getVirtualCores() * by),
             stepFactor.getVirtualCores()
+            ),
+        roundDown(
+            (int)(r.getFpgaSlots() * by),
+            stepFactor.getFpgaSlots()
             )
         );
   }
@@ -237,6 +252,7 @@ public class DominantResourceCalculator extends ResourceCalculator {
   public boolean fitsIn(Resource cluster,
       Resource smaller, Resource bigger) {
     return smaller.getMemorySize() <= bigger.getMemorySize()
-        && smaller.getVirtualCores() <= bigger.getVirtualCores();
+        && smaller.getVirtualCores() <= bigger.getVirtualCores()
+        && smaller.getFpgaSlots() <= bigger.getFpgaSlots();
   }
 }

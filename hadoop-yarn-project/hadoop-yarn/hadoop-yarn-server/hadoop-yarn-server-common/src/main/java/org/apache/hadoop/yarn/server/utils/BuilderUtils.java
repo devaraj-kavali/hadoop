@@ -474,6 +474,14 @@ public class BuilderUtils {
     return resource;
   }
 
+  public static Resource newResource(long memory, int vCores, int fpgaSlots) {
+    Resource resource = recordFactory.newRecordInstance(Resource.class);
+    resource.setMemorySize(memory);
+    resource.setVirtualCores(vCores);
+    resource.setFpgaSlots(fpgaSlots);
+    return resource;
+  }
+
   public static URL newURL(String scheme, String host, int port, String file) {
     URL url = recordFactory.newRecordInstance(URL.class);
     url.setScheme(scheme);

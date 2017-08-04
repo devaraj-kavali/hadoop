@@ -50,6 +50,8 @@ public class NodeInfo {
   protected long availMemoryMB;
   protected long usedVirtualCores;
   protected long availableVirtualCores;
+  protected long usedFpgaSlots;
+  protected long availableFpgaSlots;
   private int numRunningOpportContainers;
   private long usedMemoryOpportGB;
   private long usedVirtualCoresOpport;
@@ -73,6 +75,9 @@ public class NodeInfo {
       this.usedVirtualCores = report.getUsedResource().getVirtualCores();
       this.availableVirtualCores =
           report.getAvailableResource().getVirtualCores();
+      this.usedFpgaSlots = report.getUsedResource().getFpgaSlots();
+      this.availableFpgaSlots =
+          report.getAvailableResource().getFpgaSlots();
     }
     this.id = id.toString();
     this.rack = ni.getRackName();
@@ -183,5 +188,13 @@ public class NodeInfo {
 
   public ResourceUtilizationInfo getResourceUtilization() {
     return this.resourceUtilization;
+  }
+
+  public long getUsedFpgaSlots() {
+    return usedFpgaSlots;
+  }
+
+  public long getAvailableFpgaSlots() {
+    return availableFpgaSlots;
   }
 }

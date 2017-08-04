@@ -62,6 +62,7 @@ public class QueueMetrics implements MetricsSource {
 
   @Metric("Allocated memory in MB") MutableGaugeLong allocatedMB;
   @Metric("Allocated CPU in virtual cores") MutableGaugeInt allocatedVCores;
+  @Metric("Allocated FPGA Slots") MutableGaugeInt allocatedFpgaSlots;
   @Metric("# of allocated containers") MutableGaugeInt allocatedContainers;
   @Metric("Aggregate # of allocated containers") MutableCounterLong aggregateContainersAllocated;
   @Metric("Aggregate # of allocated node-local containers")
@@ -75,11 +76,14 @@ public class QueueMetrics implements MetricsSource {
       aggregateContainersPreempted;
   @Metric("Available memory in MB") MutableGaugeLong availableMB;
   @Metric("Available CPU in virtual cores") MutableGaugeInt availableVCores;
+  @Metric("Available FPGA Slots") MutableGaugeInt availableFpgaSlots;
   @Metric("Pending memory allocation in MB") MutableGaugeLong pendingMB;
   @Metric("Pending CPU allocation in virtual cores") MutableGaugeInt pendingVCores;
+  @Metric("Pending FPGA Slots allocation") MutableGaugeInt pendingFpgaSlots;
   @Metric("# of pending containers") MutableGaugeInt pendingContainers;
   @Metric("# of reserved memory in MB") MutableGaugeLong reservedMB;
   @Metric("Reserved CPU in virtual cores") MutableGaugeInt reservedVCores;
+  @Metric("Reserved FPGA Slots allocation") MutableGaugeInt reservedFpgaSlots;
   @Metric("# of reserved containers") MutableGaugeInt reservedContainers;
   @Metric("# of active users") MutableGaugeInt activeUsers;
   @Metric("# of active applications") MutableGaugeInt activeApplications;
@@ -339,6 +343,7 @@ public class QueueMetrics implements MetricsSource {
   public void setAvailableResourcesToQueue(Resource limit) {
     availableMB.set(limit.getMemorySize());
     availableVCores.set(limit.getVirtualCores());
+    availableFpgaSlots.set(limit.getFpgaSlots());
   }
 
   /**
@@ -376,6 +381,7 @@ public class QueueMetrics implements MetricsSource {
     pendingContainers.incr(containers);
     pendingMB.incr(res.getMemorySize() * containers);
     pendingVCores.incr(res.getVirtualCores() * containers);
+    pendingFpgaSlots.incr(res.getFpgaSlots() * containers);
   }
 
   public void decrPendingResources(String user, int containers, Resource res) {
@@ -393,6 +399,7 @@ public class QueueMetrics implements MetricsSource {
     pendingContainers.decr(containers);
     pendingMB.decr(res.getMemorySize() * containers);
     pendingVCores.decr(res.getVirtualCores() * containers);
+    pendingFpgaSlots.decr(res.getFpgaSlots() * containers);
   }
 
   public void incrNodeTypeAggregations(String user, NodeType type) {
@@ -421,6 +428,7 @@ public class QueueMetrics implements MetricsSource {
 
     allocatedMB.incr(res.getMemorySize() * containers);
     allocatedVCores.incr(res.getVirtualCores() * containers);
+    allocatedFpgaSlots.incr(res.getFpgaSlots() * containers);
     if (decrPending) {
       _decrPendingResources(containers, res);
     }
@@ -442,9 +450,11 @@ public class QueueMetrics implements MetricsSource {
   public void allocateResources(String user, Resource res) {
     allocatedMB.incr(res.getMemorySize());
     allocatedVCores.incr(res.getVirtualCores());
+    allocatedFpgaSlots.incr(res.getFpgaSlots());
 
     pendingMB.decr(res.getMemorySize());
     pendingVCores.decr(res.getVirtualCores());
+    allocatedFpgaSlots.decr(res.getFpgaSlots());
 
     QueueMetrics userMetrics = getUserMetrics(user);
     if (userMetrics != null) {
@@ -460,6 +470,7 @@ public class QueueMetrics implements MetricsSource {
     aggregateContainersReleased.incr(containers);
     allocatedMB.decr(res.getMemorySize() * containers);
     allocatedVCores.decr(res.getVirtualCores() * containers);
+    allocatedFpgaSlots.decr(res.getFpgaSlots() * containers);
     QueueMetrics userMetrics = getUserMetrics(user);
     if (userMetrics != null) {
       userMetrics.releaseResources(user, containers, res);
@@ -478,6 +489,7 @@ public class QueueMetrics implements MetricsSource {
   public void releaseResources(String user, Resource res) {
     allocatedMB.decr(res.getMemorySize());
     allocatedVCores.decr(res.getVirtualCores());
+    allocatedFpgaSlots.decr(res.getFpgaSlots());
     QueueMetrics userMetrics = getUserMetrics(user);
     if (userMetrics != null) {
       userMetrics.releaseResources(user, res);
@@ -498,6 +510,7 @@ public class QueueMetrics implements MetricsSource {
     reservedContainers.incr();
     reservedMB.incr(res.getMemorySize());
     reservedVCores.incr(res.getVirtualCores());
+    reservedFpgaSlots.incr(res.getFpgaSlots());
     QueueMetrics userMetrics = getUserMetrics(user);
     if (userMetrics != null) {
       userMetrics.reserveResource(user, res);
@@ -511,6 +524,7 @@ public class QueueMetrics implements MetricsSource {
     reservedContainers.decr();
     reservedMB.decr(res.getMemorySize());
     reservedVCores.decr(res.getVirtualCores());
+    reservedFpgaSlots.decr(res.getFpgaSlots());
     QueueMetrics userMetrics = getUserMetrics(user);
     if (userMetrics != null) {
       userMetrics.unreserveResource(user, res);
@@ -580,7 +594,7 @@ public class QueueMetrics implements MetricsSource {
   
   public Resource getAllocatedResources() {
     return BuilderUtils.newResource(allocatedMB.value(),
-        (int) allocatedVCores.value());
+        (int) allocatedVCores.value(), allocatedFpgaSlots.value());
   }
 
   public long getAllocatedMB() {
@@ -602,6 +616,14 @@ public class QueueMetrics implements MetricsSource {
   public int getAvailableVirtualCores() {
     return availableVCores.value();
   }
+  
+  public int getAvailableFpgaSlots() {
+    return availableFpgaSlots.value();
+  }
+  
+  public int getAllocatedFpgaSlots() {
+    return allocatedFpgaSlots.value();
+  }
 
   public long getPendingMB() {
     return pendingMB.value();
@@ -609,6 +631,10 @@ public class QueueMetrics implements MetricsSource {
   
   public int getPendingVirtualCores() {
     return pendingVCores.value();
+  }
+
+  public int getPendingFpgaSlots() {
+    return pendingFpgaSlots.value();
   }
 
   public int getPendingContainers() {
@@ -622,7 +648,11 @@ public class QueueMetrics implements MetricsSource {
   public int getReservedVirtualCores() {
     return reservedVCores.value();
   }
-
+  
+  public int getReservedFpgaSlots() {
+    return reservedFpgaSlots.value();
+  }
+  
   public int getReservedContainers() {
     return reservedContainers.value();
   }

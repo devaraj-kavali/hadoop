@@ -89,12 +89,27 @@ public class ResourcePBImpl extends Resource {
     maybeInitBuilder();
     builder.setVirtualCores(vCores);
   }
+  
+  @Override
+  public int getFpgaSlots() {
+    ResourceProtoOrBuilder p = viaProto ? proto : builder;
+    return p.getFpgaSlots();
+  }
+  
+  @Override
+  public void setFpgaSlots(int fpgaSlots) {
+    maybeInitBuilder();
+    builder.setFpgaSlots(fpgaSlots);
+  }
 
   @Override
   public int compareTo(Resource other) {
     long diff = this.getMemorySize() - other.getMemorySize();
     if (diff == 0) {
       diff = this.getVirtualCores() - other.getVirtualCores();
+    }
+    if (diff == 0) {
+      diff = this.getFpgaSlots() - other.getFpgaSlots();
     }
     return diff == 0 ? 0 : (diff > 0 ? 1 : -1);
   }

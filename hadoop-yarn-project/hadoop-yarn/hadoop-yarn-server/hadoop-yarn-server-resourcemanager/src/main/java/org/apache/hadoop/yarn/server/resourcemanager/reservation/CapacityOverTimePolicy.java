@@ -125,8 +125,8 @@ public class CapacityOverTimePolicy extends NoOverCommitPolicy {
     NavigableMap<Long, Resource> integralDown = new TreeMap<>();
 
     long prevTime = toCheck.getEarliestStartTime();
-    IntegralResource prevResource = new IntegralResource(0L, 0L);
-    IntegralResource runningTot = new IntegralResource(0L, 0L);
+    IntegralResource prevResource = new IntegralResource(0L, 0L, 0L);
+    IntegralResource runningTot = new IntegralResource(0L, 0L, 0L);
 
     // add intermediate points
     Map<Long, Resource> temp = new TreeMap<>();
@@ -212,7 +212,8 @@ public class CapacityOverTimePolicy extends NoOverCommitPolicy {
     // Resource moves to long.
     int memory = (int) Math.round((double) runningTot.memory / window);
     int vcores = (int) Math.round((double) runningTot.vcores / window);
-    return Resource.newInstance(memory, vcores);
+    int fpgaSlots = (int) Math.round((double) runningTot.fpgaSlots / window);
+    return Resource.newInstance(memory, vcores, fpgaSlots);
   }
 
   @Override
@@ -271,39 +272,46 @@ public class CapacityOverTimePolicy extends NoOverCommitPolicy {
   private static class IntegralResource {
     long memory;
     long vcores;
+    long fpgaSlots;
 
     public IntegralResource(Resource resource) {
       this.memory = resource.getMemorySize();
       this.vcores = resource.getVirtualCores();
+      this.fpgaSlots = resource.getFpgaSlots();
     }
 
-    public IntegralResource(long mem, long vcores) {
+    public IntegralResource(long mem, long vcores, long fpgaSlots) {
       this.memory = mem;
       this.vcores = vcores;
+      this.fpgaSlots = fpgaSlots;
     }
 
     public void add(Resource r) {
       memory += r.getMemorySize();
       vcores += r.getVirtualCores();
+      fpgaSlots += r.getFpgaSlots();
     }
 
     public void add(IntegralResource r) {
       memory += r.memory;
       vcores += r.vcores;
+      fpgaSlots += r.fpgaSlots;
     }
 
     public void subtract(Resource r) {
       memory -= r.getMemorySize();
       vcores -= r.getVirtualCores();
+      fpgaSlots -= r.getFpgaSlots();
     }
 
     public IntegralResource negate() {
-      return new IntegralResource(-memory, -vcores);
+      return new IntegralResource(-memory, -vcores, -fpgaSlots);
     }
 
     public void multiplyBy(long window) {
       memory = memory * window;
       vcores = vcores * window;
+      fpgaSlots = fpgaSlots * window;
     }
 
     public long compareTo(IntegralResource other) {
@@ -311,12 +319,15 @@ public class CapacityOverTimePolicy extends NoOverCommitPolicy {
       if (diff == 0) {
         diff = vcores - other.vcores;
       }
+      if (diff == 0) {
+        diff = fpgaSlots - other.fpgaSlots;
+      }
       return diff;
     }
 
     @Override
     public String toString() {
-      return "<memory:" + memory + ", vCores:" + vcores + ">";
+      return "<memory:" + memory + ", vCores:" + vcores + ", fpgaSlots:" + fpgaSlots + ">";
     }
 
   }

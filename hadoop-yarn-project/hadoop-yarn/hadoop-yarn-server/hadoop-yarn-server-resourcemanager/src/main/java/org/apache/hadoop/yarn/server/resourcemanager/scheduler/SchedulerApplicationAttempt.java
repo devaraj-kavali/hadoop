@@ -198,6 +198,7 @@ public class SchedulerApplicationAttempt implements SchedulableEntity {
   // rejected because of duplicated allocation
   private AtomicLong unconfirmedAllocatedMem = new AtomicLong();
   private AtomicInteger unconfirmedAllocatedVcores = new AtomicInteger();
+  private AtomicInteger unconfirmedFpgaSlots = new AtomicInteger();
 
   public SchedulerApplicationAttempt(ApplicationAttemptId applicationAttemptId, 
       String user, Queue queue, AbstractUsersManager abstractUsersManager,
@@ -1181,7 +1182,8 @@ public class SchedulerApplicationAttempt implements SchedulableEntity {
     if (StringUtils.equals(nodePartition, RMNodeLabelsManager.NO_LABEL)) {
       pending = Resources.subtract(pending, Resources
           .createResource(unconfirmedAllocatedMem.get(),
-              unconfirmedAllocatedVcores.get()));
+              unconfirmedAllocatedVcores.get(),
+              unconfirmedFpgaSlots.get()));
     }
 
     if (Resources.greaterThan(rc, cluster, pending, Resources.none())) {
@@ -1313,11 +1315,13 @@ public class SchedulerApplicationAttempt implements SchedulableEntity {
   public void incUnconfirmedRes(Resource res) {
     unconfirmedAllocatedMem.addAndGet(res.getMemorySize());
     unconfirmedAllocatedVcores.addAndGet(res.getVirtualCores());
+    unconfirmedFpgaSlots.addAndGet(res.getFpgaSlots());
   }
 
   public void decUnconfirmedRes(Resource res) {
     unconfirmedAllocatedMem.addAndGet(-res.getMemorySize());
     unconfirmedAllocatedVcores.addAndGet(-res.getVirtualCores());
+    unconfirmedFpgaSlots.addAndGet(-res.getFpgaSlots());
   }
 
   @Override

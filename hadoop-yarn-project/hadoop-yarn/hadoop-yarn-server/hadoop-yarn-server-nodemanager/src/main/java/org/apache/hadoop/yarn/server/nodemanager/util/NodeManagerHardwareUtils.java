@@ -332,4 +332,9 @@ public class NodeManagerHardwareUtils {
     }
     return memoryMb;
   }
+
+  public static int getFpgaSlots(Configuration conf) {
+    return conf.getInt(YarnConfiguration.NM_FPGA_SLOTS,
+        YarnConfiguration.DEFAULT_NM_FPGA_SLOTS);
+  }
 }

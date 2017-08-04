@@ -84,16 +84,21 @@ class NodesPage extends RmView {
             .th(".mem", "Mem Used")
             .th(".mem", "Mem Avail")
             .th(".vcores", "VCores Used")
-            .th(".vcores", "VCores Avail");
+            .th(".vcores", "VCores Avail")
+            .th(".fpgas", "FPGAs Used")
+            .th(".fpgas", "FPGAs Avail");
       } else {
         trbody.th(".containers", "Running Containers (G)")
             .th(".mem", "Mem Used (G)")
             .th(".mem", "Mem Avail (G)")
             .th(".vcores", "VCores Used (G)")
             .th(".vcores", "VCores Avail (G)")
+            .th(".fpgas", "FPGAs Used (G)")
+            .th(".fpgas", "FPGAs Avail (G)")
             .th(".containers", "Running Containers (O)")
             .th(".mem", "Mem Used (O)")
             .th(".vcores", "VCores Used (O)")
+            .th(".fpgas", "FPGAs Used (O)")
             .th(".containers", "Queued Containers");
       }
 
@@ -175,6 +180,9 @@ class NodesPage extends RmView {
             .append("\",\"").append(String.valueOf(info.getUsedVirtualCores()))
             .append("\",\"")
             .append(String.valueOf(info.getAvailableVirtualCores()))
+            .append("\",\"").append(String.valueOf(info.getUsedFpgaSlots()))
+            .append("\",\"")
+            .append(String.valueOf(info.getAvailableFpgaSlots()))
             .append("\",\"");
 
         // If opportunistic containers are enabled, add extra fields.
